@@ -1,3 +1,5 @@
+import {Dict} from "@/types";
+
 export const toObject = <T = any>(data: any) => {
   if (Buffer.isBuffer(data)) return JSON.parse(data.toString()) as T;
   if (typeof data === 'object') return data as T;
@@ -41,7 +43,20 @@ export function findLastIndex<T>(list: T[], predicate: (item: T, index: number) 
   }
   return -1;
 }
-
+export function getArgs(fn:Function,params:Dict){
+  const ARGS = String(fn).match(/\(.*\)/)?.[0]
+      .replace("(", "")
+      .replace(")", "")
+      .split(",")
+      .filter(Boolean).map(v => v.replace(/=.+/, "").trim());
+  const args = [];
+  for (let k of ARGS) {
+    if (Reflect.has(params, k)) {
+      args.push(params[k]);
+    }
+  }
+  return args;
+}
 export function trimQuote(str: string) {
   const quotes: string[][] = [
     [

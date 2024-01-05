@@ -68,7 +68,6 @@ export class GuildMessageEvent extends Message implements MessageEvent {
     guild_id: string
     guild_name: string
     channel_id: string
-
     channel_name: string
 
     constructor(bot: Bot, payload: Partial<Message>) {
@@ -88,7 +87,7 @@ export namespace Message {
         permissions: User.Permission[]
     }
 
-    export type SubType = 'private' | 'group' | 'guild' | 'direct'
+    export type SubType = 'guild' | 'direct'
 
     export function parse(this: Bot, payload: Dict) {
         let template = payload.content || ''

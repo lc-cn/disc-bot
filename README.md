@@ -32,13 +32,5 @@ bot.on('message.guild',(e)=>{
 bot.on('message.direct',(e)=>{
 	e.reply('hi world')
 })
-bot.sendPrivateMsg('user_id',[
-	'你好呀',
-	{
-		type:'image',
-		url:'https://foo.bar/img.jpg'
-	}
-])
-
 bot.start()
 ```

@@ -27,11 +27,11 @@ export class SessionManager extends EventEmitter {
     this.on(SessionEvents.EVENT_WS, (data) => {
       switch (data.eventType) {
         case SessionEvents.RECONNECT:
-          console.debug("[CLIENT] 等待断线重连中...");
+          this.bot.logger.debug("[CLIENT] 等待断线重连中...");
           break;
         case SessionEvents.DISCONNECT:
           if (this.retry < (this.bot.options.max_reconnect_count || MAX_RETRY)) {
-            console.debug("[CLIENT] 重新连接中，尝试次数：", this.retry + 1);
+            this.bot.logger.debug("[CLIENT] 重新连接中，尝试次数：", this.retry + 1);
             if (WebsocketCloseReason.find((v) => v.code === data.code)?.resume) {
               this.sessionRecord = data.eventMsg;
             }
@@ -39,7 +39,7 @@ export class SessionManager extends EventEmitter {
             this.start();
             this.retry += 1;
           } else {
-            console.debug("[CLIENT] 超过重试次数，连接终止");
+            this.bot.logger.debug("[CLIENT] 超过重试次数，连接终止");
             this.emit(SessionEvents.DEAD, {
               eventType: SessionEvents.ERROR,
               msg: "连接已死亡，请检查网络或重启"
@@ -47,14 +47,14 @@ export class SessionManager extends EventEmitter {
           }
           break;
         case SessionEvents.READY:
-          console.debug("[CLIENT] 连接成功");
+          this.bot.logger.debug("[CLIENT] 连接成功");
           this.retry = 0;
           break;
         default:
       }
     });
     this.on(SessionEvents.ERROR, (e) => {
-      console.error(`[CLIENT] 发生错误：${e}`);
+      this.bot.logger.error(`[CLIENT] 发生错误：${e}`);
     })
   }
 
@@ -116,11 +116,11 @@ export class SessionManager extends EventEmitter {
 
   startListen() {
     this.bot.ws!.on('open',()=>{
-      console.log('connect open')
+      this.bot.logger.log('connect open')
     })
     this.bot.ws!.on("close", (code) => {
       this.alive = false;
-      console.error(`[CLIENT] 连接关闭：${code}`);
+      this.bot.logger.error(`[CLIENT] 连接关闭：${code}`);
       this.emit(SessionEvents.EVENT_WS, {
         eventType: SessionEvents.DISCONNECT,
         code,
@@ -136,11 +136,11 @@ export class SessionManager extends EventEmitter {
     });
     this.bot.ws!.on("error", (e) => {
       this.alive = false
-      console.debug("[CLIENT] 连接错误");
+      this.bot.logger.debug("[CLIENT] 连接错误");
       this.emit(SessionEvents.CLOSED, {eventType: SessionEvents.CLOSED});
     });
     this.bot.ws!.on("message", (data) => {
-      console.debug(`[CLIENT] 收到消息: ${data}`);
+      this.bot.logger.debug(`[CLIENT] 收到消息: ${data}`);
       // 先将消息解析
       const wsRes = toObject(data);
       // 先判断websocket连接是否成功
@@ -154,7 +154,7 @@ export class SessionManager extends EventEmitter {
 
       // 鉴权通过
       if (wsRes.t === SessionEvents.READY) {
-        console.debug(`[CLIENT] 鉴权通过`);
+        this.bot.logger.debug(`[CLIENT] 鉴权通过`);
         const {d, s} = wsRes;
         const {session_id, user = {}} = d;
         this.bot.self_id = user.id;
@@ -166,11 +166,11 @@ export class SessionManager extends EventEmitter {
           this.sessionRecord.seq = s;
           this.heartbeatParam.d = s;
         }
-        console.info(`connect to ${user.username}(${user.id})`)
+        this.bot.logger.info(`connect to ${user.username}(${user.id})`)
         this.isReconnect = false
         this.emit(SessionEvents.READY, {eventType: SessionEvents.READY, msg: d || ""});
         // 第一次发送心跳
-        console.debug(`[CLIENT] 发送第一次心跳`, this.heartbeatParam);
+        this.bot.logger.debug(`[CLIENT] 发送第一次心跳`, this.heartbeatParam);
         this.sendWs(this.heartbeatParam);
         return;
       }
@@ -180,7 +180,7 @@ export class SessionManager extends EventEmitter {
           this.alive = true;
           this.emit(SessionEvents.EVENT_WS, {eventType: SessionEvents.READY});
         }
-        console.debug("[CLIENT] 心跳校验", this.heartbeatParam);
+        this.bot.logger.debug("[CLIENT] 心跳校验", this.heartbeatParam);
         setTimeout(() => {
           this.sendWs(this.heartbeatParam);
         }, this.heartbeatInterval);
@@ -208,7 +208,7 @@ export class SessionManager extends EventEmitter {
     return (this.bot.options.intents || []).reduce((result, item) => {
       const value = Intends[item];
       if (value === undefined) {
-        console.warn(`Invalid intends(${item}),skip...`);
+        this.bot.logger.warn(`Invalid intends(${item}),skip...`);
         return result;
       }
       return Intends[item as unknown as keyof Intends] | result;
