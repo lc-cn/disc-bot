@@ -1,4 +1,4 @@
-# ts-discord-bot
+# disc-bot
 Discord 机器人开发SDK
 ## prepare
 1. 前往 `Discord 开发者平台`([https://discord.com/developers/applications](https://discord.com/developers/applications)) 创建应用
@@ -9,11 +9,11 @@ Discord 机器人开发SDK
 
 ## install
 ```shell
-npm i ts-discord-bot
+npm i disc-bot
 ```
 ## usage
 ```javascript
-const {Bot, Intents}=require('ts-discord-bot')
+const {Bot, Intents}=require('disc-bot')
 const bot=new Bot({
     token:'', // prepare 第四步获取到的 Bot Token
     intents:Intends.GUILDS|

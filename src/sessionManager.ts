@@ -107,8 +107,8 @@ export class SessionManager extends EventEmitter {
         intents: this.getValidIntends(), // todo 接受的类型
         properties:{
           os:'linux',
-          browser:'ts-discord-bot',
-          device:'ts-discord-bot'
+          browser:'disc-bot',
+          device:'disc-bot'
         }
       }
     })
