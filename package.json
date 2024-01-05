@@ -1,5 +1,5 @@
 {
-  "name": "disc-bot",
+  "name": "ts-disc-bot",
   "version": "1.0.0",
   "description": "Discord 机器人开发SDK",
   "main": "lib/index.js",
@@ -20,7 +20,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lc-cn/disc-bot.git"
+    "url": "git+https://github.com/lc-cn/ts-disc-bot.git"
   },
   "keywords": [
     "Discord",
@@ -48,7 +48,7 @@
   },
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/lc-cn/disc-bot/issues"
+    "url": "https://github.com/lc-cn/ts-disc-bot/issues"
   },
-  "homepage": "https://github.com/lc-cn/disc-bot#readme"
+  "homepage": "https://github.com/lc-cn/ts-disc-bot#readme"
 }

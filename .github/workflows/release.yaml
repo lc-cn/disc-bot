@@ -14,7 +14,7 @@ jobs:
         id: release
         with:
           release-type: node
-          package-name: disc-bot
+          package-name: ts-disc-bot
       # Checkout
       - uses: actions/checkout@v3
         if: ${{ steps.release.outputs.release_created }}
